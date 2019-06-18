@@ -1,0 +1,28 @@
+version: '3.7'
+x-config:
+  sevices:
+    service-default: &service-default
+      privileged: true
+    vr-xcon: &vr-xcon
+      <<: *service-default
+      image: averyadams/vrnetlab-devices:vr-xcon
+    csr: &csr
+      <<: *service-default
+      image: averyadams/vrnetlab-devices:csr1000v-16.04.01
+
+services:
+  #csrv-$((CSRV++)):
+  csr-01:
+    <<: *csr
+  #csr-02:
+  #  <<: *csr
+  vr-xcon:
+    <<: *vr-xcon
+    links:
+    - csr-01
+    #- csr-02
+    command:
+    #- --p2p csr-01--csr-01
+    - --p2p csr-01/1--csr-01/2
+
+#docker run -d --name vr-xcon --link vr1 --link vr2 vr-xcon --p2p vr1/1--vr2/1
